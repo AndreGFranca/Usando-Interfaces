@@ -1,5 +1,7 @@
 ﻿namespace UsandoInterfaces.Services {
     interface IPaymentService {
-       double Quota(double amount, int installment);
+       double PaymentFee(double amount);
+
+        double Interest(double amount, int months);
     }
 }

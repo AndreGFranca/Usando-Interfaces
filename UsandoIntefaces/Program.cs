@@ -14,13 +14,16 @@ namespace UsandoInterfaces {
             Console.Write("Contract value: ");
             double contractValue = double.Parse(Console.ReadLine());
             Console.Write("Enter number of installments: ");
-            int installments = int.Parse(Console.ReadLine());
+            int months = int.Parse(Console.ReadLine());
 
             Contract contract = new Contract(number, date, contractValue);
-            ProcessService processService = new ProcessService(contract, new PayPal());
+
+
+            ProcessService processService = new ProcessService(new PayPal());
+            processService.ProcessContract(contract, months);
             
             Console.WriteLine("Installments: ");
-            foreach (var a in processService.Total(installments)) {
+            foreach (var a in contract.Installments) {
                 Console.WriteLine(a);
             }
 

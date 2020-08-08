@@ -6,25 +6,22 @@ using UsandoInterfaces.Entities;
 
 namespace UsandoInterfaces.Services {
     class ProcessService {
-        public Contract Contract { get; set; }
 
         private IPaymentService _paymentService;
 
-        public ProcessService(Contract contract, IPaymentService paymentService) {
-            Contract = contract;
+        public ProcessService(IPaymentService paymentService) {
             _paymentService = paymentService;
         }
 
-        public List<Installment> Total(int installment) {
-            double installmentValue = Contract.TotalValue / installment;
+        public void ProcessContract(Contract contract, int months) {
+            double installmentValue = contract.TotalValue / months;
             List<Installment> list = new List<Installment>();
-            for (int i = 1; i <= installment; i++) {
-                DateTime date = Contract.Date.AddMonths(i);
-                
-                list.Add(new Installment(date, _paymentService.Quota(installmentValue, i)));
+            for (int i = 1; i <= months; i++) {
+                DateTime date = contract.Date.AddMonths(i);
+                double updateQuota = installmentValue + _paymentService.Interest(installmentValue, i);
+                double fullQuota = updateQuota + _paymentService.PaymentFee(updateQuota);
+                contract.AddInstallment(new Installment(date, fullQuota));
             }
-
-            return list;
         }       
 
     }
